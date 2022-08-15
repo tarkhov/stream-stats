@@ -11,8 +11,8 @@ class StreamService
 
     public static function seed(): void
     {
-        $clientId = config('api.twitch.client_id');
-        $clientSecret = config('api.twitch.client_secret');
+        $clientId = config('services.twitch.client_id');
+        $clientSecret = config('services.twitch.client_secret');
         $oauth = Http::withHeaders([
             'Content-Type' => 'application/x-www-form-urlencoded'
         ])
@@ -28,11 +28,11 @@ class StreamService
             $count += self::PER_PAGE;
             $page = $data['pagination']['cursor'];
             $data = Arr::shuffle(Arr::map($data['data'], function ($stream) {
+                unset($stream['id'], $stream['started_at']);
+
                 if (is_array($stream['tag_ids'])) {
                     $stream['tag_ids'] = implode(', ', $stream['tag_ids']);
                 }
-
-                unset($stream['started_at']);
 
                 return $stream;
             }));

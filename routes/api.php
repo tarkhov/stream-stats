@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StreamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +18,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('auth')
+    ->middleware('auth:sanctum')
+    ->controller(AuthController::class)
+    ->group(function () {
+        Route::get('user', 'user');
+        Route::get('refresh', 'refresh');
+    });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/streams', [StreamController::class, 'index']);
 });
